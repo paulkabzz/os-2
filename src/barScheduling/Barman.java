@@ -335,8 +335,56 @@ public class Barman extends Thread {
       
     
     
+    // --- State for CSV output ---
+    private boolean headerWritten = false;
+    private java.io.FileWriter csvWriter = null;
+
     private void recordCompletedOrder(DrinkOrder order) throws IOException {
-    	// THIS IS THE ONLY FUNCTION YOU MAY CHANGE
+        // Lazily initialise writer and results directory on first call
+        if (csvWriter == null) {
+            java.io.File resultsDir = new java.io.File("results");
+            if (!resultsDir.exists()) {
+                resultsDir.mkdirs();
+            }
+
+            String filename = "results/" + schedulerName + "_"
+                    + SchedulingSimulation.noPatrons + "_"
+                    + SchedulingSimulation.seed + ".csv";
+
+            csvWriter = new java.io.FileWriter(filename, false);
+        }
+
+        // Write header once
+        if (!headerWritten) {
+            csvWriter.write("scheduler,patronID,drink,executionTime,"
+                    + "arrivalTime,serviceStartTime,completionTime,"
+                    + "waitingTime,responseTime,turnaroundTime,"
+                    + "queueLevel,priority\n");
+            csvWriter.flush();
+            headerWritten = true;
+        }
+
+        // Compute metrics
+        long waitingTime = order.getWaitingTime();
+        long responseTime = order.getResponseTime();
+        long turnaroundTime = order.getTurnaroundTime();
+
+        // Write row
+        csvWriter.write(String.format(java.util.Locale.US,
+                "%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
+                schedulerName,
+                order.getOrderer(),
+                order.getDrinkName().replace(",", ";"),
+                order.getExecutionTime(),
+                order.getArrivalTime(),
+                order.getServiceStartTime(),
+                order.getCompletionTime(),
+                waitingTime,
+                responseTime,
+                turnaroundTime,
+                order.getQueueLevel(),
+                order.getPriority()));
+        csvWriter.flush();
     }
 
 }
