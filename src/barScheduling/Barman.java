@@ -335,12 +335,11 @@ public class Barman extends Thread {
       
     
     
-    // --- State for CSV output ---
+    // --- for CSV output ---
     private boolean headerWritten = false;
     private java.io.FileWriter csvWriter = null;
 
     private void recordCompletedOrder(DrinkOrder order) throws IOException {
-        // Lazily initialise writer and results directory on first call
         if (csvWriter == null) {
             java.io.File resultsDir = new java.io.File("results");
             if (!resultsDir.exists()) {
@@ -354,7 +353,6 @@ public class Barman extends Thread {
             csvWriter = new java.io.FileWriter(filename, false);
         }
 
-        // Write header once
         if (!headerWritten) {
             csvWriter.write("scheduler,patronID,drink,executionTime,"
                     + "arrivalTime,serviceStartTime,completionTime,"
@@ -364,12 +362,10 @@ public class Barman extends Thread {
             headerWritten = true;
         }
 
-        // Compute metrics
         long waitingTime = order.getWaitingTime();
         long responseTime = order.getResponseTime();
         long turnaroundTime = order.getTurnaroundTime();
 
-        // Write row
         csvWriter.write(String.format(java.util.Locale.US,
                 "%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
                 schedulerName,

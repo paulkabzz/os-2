@@ -325,24 +325,3 @@ plt.tight_layout()
 fig.savefig(os.path.join(FIGURES_DIR, "09_starvation_max_wait.png"))
 print("Saved 09_starvation_max_wait.png")
 
-
-# ═══════════════════════════════════════════════════════════════════════════
-# Summary statistics table
-# ═══════════════════════════════════════════════════════════════════════════
-print("\n" + "=" * 70)
-print("SUMMARY STATISTICS (averaged across all patron counts and seeds)")
-print("=" * 70)
-
-summary = df.groupby("scheduler").agg(
-    avg_wait=("waitingTime", "mean"),
-    median_wait=("waitingTime", "median"),
-    std_wait=("waitingTime", "std"),
-    max_wait=("waitingTime", "max"),
-    avg_turnaround=("turnaroundTime", "mean"),
-    median_turnaround=("turnaroundTime", "median"),
-    avg_response=("responseTime", "mean"),
-).reindex(SCHEDULERS)
-
-print(summary.to_string(float_format="%.1f"))
-print("=" * 70)
-print(f"\nAll figures saved to {FIGURES_DIR}/")
