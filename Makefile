@@ -16,4 +16,8 @@ run: compile
 clean:
 	rm -rf $(BIN)
 	rm -rf results
+exp:
+	./run_experiments.sh
+fig:
+	python3 visualise_results.py
 
