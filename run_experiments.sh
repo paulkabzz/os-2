@@ -16,7 +16,7 @@ mkdir -p results
 TOTAL=$(( ${#PATRON_COUNTS[@]} * ${#SEEDS[@]} * ${#SCHEDULERS[@]} ))
 COUNT=0
 
-echo "=== Allegra the Barman — Experiment Runner ==="
+echo "=== Allegra the Barmn — Experiment Runner ==="
 echo "Patron counts : ${PATRON_COUNTS[*]}"
 echo "Seeds         : ${SEEDS[*]}"
 echo "Schedulers    : ${SCHED_NAMES[*]}"
